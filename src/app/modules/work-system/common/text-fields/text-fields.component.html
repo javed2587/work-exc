@@ -41,6 +41,7 @@
         [color]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.color"
         [decision]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.decision"
         [note]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.note"
+        [test]="phasesPage"
         [task]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.task"
         [opportunity]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.opportunity"
       >
@@ -54,7 +55,7 @@
       aria-label="Username"
       aria-describedby="basic-addon1"
       maxlength="250"
-      [(ngModel)]="phases[this.mainIndex].purpose"
+      [(ngModel)]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose.text"
       (ngModelChange)="savePhasePurpose($event)"
       [disabled]="true ? lockstatus == true : false"
     />

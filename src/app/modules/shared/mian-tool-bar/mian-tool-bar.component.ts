@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { IRatingColor, IRatingDecision, IRatingNote, IRatingTask } from 'src/app/models/common/rating';
 import { RatingService } from 'src/app/services/rating.service';
 
@@ -11,7 +11,7 @@ function hello() {
   templateUrl: './mian-tool-bar.component.html',
   styleUrls: ['./mian-tool-bar.component.css'],
 })
-export class MianToolBarComponent implements OnInit {
+export class MianToolBarComponent implements OnInit, OnChanges {
   @Output() hideSelectedRow = new EventEmitter<any>();
   @Input() selectedRowIndex: number;
   @Input() showSnakeBarMenu: Boolean;
@@ -26,6 +26,7 @@ export class MianToolBarComponent implements OnInit {
   @Input() task: IRatingTask
   @Input() decision: IRatingDecision
   @Input() opportunity: IRatingNote
+  @Input() test: any
   @Output() pushColorToMainParentSpan = new EventEmitter<String>();
   @Output() onaddRating = new EventEmitter<any>();
   @Output() onCancel = new EventEmitter<Boolean>();
@@ -52,6 +53,10 @@ export class MianToolBarComponent implements OnInit {
   constructor(private _rateService: RatingService) {}
 
   ngOnInit(): void {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    debugger
+  }
 
   openRatingModel() {
     if (this.lockstatus == false || this.lockstatus == undefined) {

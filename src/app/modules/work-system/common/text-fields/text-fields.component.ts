@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { VoiceToTextServiceService } from 'src/app/services/voice-to-text-service.service';
 // import { PhaseMeasures } from '../../../../models/phase-measures'
 import tooltips from '../../../../../assets/data/tooltips.json';
@@ -12,7 +12,7 @@ import { PageBody } from 'src/app/models/work-system/work-system-body';
   templateUrl: './text-fields.component.html',
   styleUrls: ['./text-fields.component.css'],
 })
-export class TextFieldsComponent implements OnInit {
+export class TextFieldsComponent implements OnInit, OnChanges {
   showMic = false;
   showSnakeBar: boolean;
   selectiveFieldIndex: number = -1;
@@ -137,6 +137,9 @@ export class TextFieldsComponent implements OnInit {
     // if (this.phaseMeasuresData.length > 0) {
     //   this.phaseMeasuresinputFileds = this.phaseMeasuresData;
     // }
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    debugger
   }
   fetchIndex(i: number) {
     this.selectiveFieldIndex = i;

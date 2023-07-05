@@ -125,6 +125,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
                   phaseTitle: p.phaseDefinition.phaseTitle,
                   phaseNameColor: '',
                   purpose: p.phaseDefinition.purpose.text,
+                  purposeAttrs: p.phaseDefinition.purpose.rating,
                   measures: p.phaseDefinition.measures
                     ? p.phaseDefinition.measures.map((m) => {
                         return {
@@ -185,6 +186,13 @@ export class PhasesListComponent implements OnInit, OnChanges {
             phaseTitle: phase.phaseTitle,
             purpose: {
               text: phase.purpose == '' ? null : phase.purpose,
+              rating: {
+                task: phase?.purposeAttrs?.task,
+                note: phase?.purposeAttrs?.note,
+                decision: phase?.purposeAttrs?.decision,
+                opportunity: phase?.purposeAttrs?.opportunity,
+                color: null
+              }
             },
             measures: phase.measures.map((measure, index) => {
               return {
@@ -218,6 +226,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
         };
       });
     }
+    debugger
     this.pushBackEndData.emit(this.phasesPage);
   }
   //? Gate
@@ -398,7 +407,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
     this.phases[currentIndex].phaseurposeFlag = !status;
     this.phases[currentIndex].isDisabledDragDrop = true;
 
-    this.backendData();
+    // this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
   //? phase measure
@@ -630,36 +639,50 @@ export class PhasesListComponent implements OnInit, OnChanges {
 
   fetchNotesValue(event, index) {
     console.log('Notes Value at Phase List:', event, index);
-    this.phases[index].purposeAttrs.note = event;
+    if (!this.phases[index].purposeAttrs)
+      this.phases[index].purposeAttrs = { note: event };
+    else
+      this.phases[index].purposeAttrs.note = event;
     console.log('Updated Phases Array:', this.phases);
-
+    debugger
     this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
 
   fetchOpportunityValue(event, index) {
     console.log('Opprtunity Value at Phase List:', event, index);
-    this.phases[index].purposeAttrs.opportunity = event;
+    if (!this.phases[index].purposeAttrs)
+      this.phases[index].purposeAttrs = { opportunity: event };
+    else
+      this.phases[index].purposeAttrs.opportunity = event;
     console.log('Updated Phases Array:', this.phases);
-
+    debugger
     this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
 
   fetchDecisionValue(event, index) {
     console.log('Decision Value at Phase List:', event, index);
-    this.phases[index].purposeAttrs.decision = event;
+    if (!this.phases[index].purposeAttrs)
+      this.phases[index].purposeAttrs = { decision: event };
+    else
+      this.phases[index].purposeAttrs.decision = event;
     console.log('Updated Phases Array:', this.phases);
 
+    debugger
     this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
 
   fetchTaskValue(event, index) {
     console.log('Task Value at Phase List:', event, index);
-    this.phases[index].purposeAttrs.task = event;
+    if (!this.phases[index].purposeAttrs)
+      this.phases[index].purposeAttrs = { task: event };
+    else
+      this.phases[index].purposeAttrs.task = event;
     console.log('Updated Phases Array:', this.phases);
 
+    debugger
     this.backendData();
     this.sendPhasesList.emit(this.phases);
   }

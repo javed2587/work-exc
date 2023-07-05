@@ -124,9 +124,7 @@ export class PhaseFourComponent implements OnInit, OnChanges {
   PlanMeasuresPhaseDataPopulated: Boolean = false;
 
   ngOnChanges(changes: SimpleChanges): void {
-    debugger
     for (const propName in changes) {
-      debugger
       if (propName == 'planOutcomesPhaseData') {
         if (
           this.planOutcomesPhaseData &&
@@ -175,7 +173,7 @@ export class PhaseFourComponent implements OnInit, OnChanges {
                           userId: outcome?.rating?.decision?.owner?.userId,
                           name: outcome?.rating?.decision?.owner?.name,
                         },
-                        
+
                         date: outcome?.rating?.decision?.date,
                       }
                     ),
