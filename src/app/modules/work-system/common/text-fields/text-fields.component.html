@@ -192,6 +192,12 @@
         [lockstatus]="lockstatus"
         [openRatingForNote]="true"
         [openRatingTabFlag]="true"
+        [color]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.color"
+        [decision]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.decision"
+        [note]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.note"
+        [test]="phasesPage"
+        [task]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.task"
+        [opportunity]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.opportunity"
       >
       </app-mian-tool-bar>
     </span>

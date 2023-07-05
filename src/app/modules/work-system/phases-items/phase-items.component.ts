@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
   OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 // import { EmailValidator } from '@angular/forms';
 import { PhaseItemI } from 'src/app/models/phase-item-i';
@@ -21,7 +22,7 @@ import { PageBody } from 'src/app/models/work-system/work-system-body';
   templateUrl: './phase-items.component.html',
   styleUrls: ['./phase-items.component.css'],
 })
-export class PhaseItemsComponent implements OnInit {
+export class PhaseItemsComponent implements OnInit, OnChanges{
   // expandedIndex = 0;
   // disabled = false;
   closeFolder: boolean = false;
@@ -137,6 +138,9 @@ export class PhaseItemsComponent implements OnInit {
   // @Output() phaseNameValue = new EventEmitter();//no
   //  @Output() sendRemoveMeasure = new EventEmitter();
   constructor() {}
+  ngOnChanges(changes: SimpleChanges): void {
+      debugger
+  }
   ngOnInit(): void {}
 
   fetchNotesValue(event) {

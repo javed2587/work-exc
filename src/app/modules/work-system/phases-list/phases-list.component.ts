@@ -123,7 +123,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
             ? this.phasesPage.phases.map((p) => {
                 return {
                   phaseTitle: p.phaseDefinition.phaseTitle,
-                  phaseNameColor: '',
+                  phaseNameColor:  p.phaseDefinition.purpose.rating,
                   purpose: p.phaseDefinition.purpose.text,
                   purposeAttrs: p.phaseDefinition.purpose.rating,
                   measures: p.phaseDefinition.measures
@@ -131,10 +131,10 @@ export class PhasesListComponent implements OnInit, OnChanges {
                         return {
                           rateValue:
                             m.rating.color == '' ? null : m.rating.color,
-                          note: '',
-                          task: '',
-                          oppertunity: '',
-                          decision: '',
+                          note: m.rating?.note,
+                          task: m.rating?.task,
+                          opportunity: m.rating?.opportunity,
+                          decision: m.rating?.decision,
                           value: m.text,
                           toolbarStatus: false,
                         };
@@ -156,6 +156,10 @@ export class PhasesListComponent implements OnInit, OnChanges {
                         return {
                           rateValue: w.rating.color,
                           value: w.text,
+                          note: w.rating?.note,
+                          decision: w.rating?.decision,
+                          opportunity: w.rating?.opportunity,  
+                          task: w.rating?.task
                         };
                       })
                     : [],
@@ -179,11 +183,15 @@ export class PhasesListComponent implements OnInit, OnChanges {
       this.phasesPage = { phases: [] }
     }
     if (this.phasesPage) {
+      debugger
       this.phasesPage.phases = this.phases.map((phase, i) => {
         return {
           phaseDefinition: {
             seqNumber: i.toString(),
             phaseTitle: phase.phaseTitle,
+            // rating: {
+            //   color: phase.color,
+            // },
             purpose: {
               text: phase.purpose == '' ? null : phase.purpose,
               rating: {
@@ -194,14 +202,30 @@ export class PhasesListComponent implements OnInit, OnChanges {
                 color: null
               }
             },
+            
             measures: phase.measures.map((measure, index) => {
               return {
+                seqNumber: index,
                 text: measure.value == '' ? null : measure.value,
                 rating: {
-                  color: measure.rateValue == '' ? null : measure.rateValue,
-                },
+                  task: measure?.task,
+                  note: measure?.note,
+                  decision: measure?.decision,
+                  opportunity: measure?.opportunity,
+                  color: null
+                }
               };
             }),
+            phases: {
+              text: phase.phaseTitle == '' ? null : phase.phaseTitle,
+              rating: {
+                task: phase?.task,
+                note: phase?.note,
+                decision: phase?.decision,
+                opportunity: phase?.opportunity,
+                color: null
+              }
+            },
             entryGate: {
               text:
                 phase.initialTitle == '' || !phase.initialTitle
@@ -220,6 +244,10 @@ export class PhasesListComponent implements OnInit, OnChanges {
               text: workStep.value == '' ? null : workStep.value,
               rating: {
                 color: workStep.rateValue == '' ? null : workStep.rateValue,
+                note: workStep.note == '' ? null : workStep.note,
+                decision: workStep.decision == '' ? null : workStep.decision,
+                opportunity: workStep.opportunity == '' ? null : workStep.opportunity,
+                task: workStep.task == '' ? null : workStep.task,
               },
             };
           }),
@@ -690,27 +718,31 @@ export class PhasesListComponent implements OnInit, OnChanges {
   // Phase Measures
 
   fetchPhaseMeasureNotesValue(event, index) {
-    console.log('Phase Measure Notes Value at Phase List:', event, index);
-    this.phases[index].measures[event.index].note = event.event;
-    console.log('Phases Updated Array:', this.phases);
-
+    debugger
+    if(!this.phases[index].measures){
+      this.phases[index].measures[event.index].note = { note: event}
+    } else {
+      this.phases[index].measures[event.index].note = event.event;
+    }
+  
     this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
 
   fetchPhaseMeasureOpportunityValue(event, index) {
-    console.log('Phase Measure Opportunity Value at Phase List:', event, index);
-    this.phases[index].measures[event.index].oppertunity = event.event;
-    console.log('Phases Updated Array:', this.phases);
-
+    if(!this.phases[index].measures){
+      this.phases[index].measures[event.index].oppertunity = {oppertunity: event}
+    } else {
+      this.phases[index].measures[event.index].oppertunity = event.event;
+    }
     this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
 
   fetchPhaseMeasureTaskValue(event, index) {
-    console.log('Phase Measure Task Value at Phase List:', event, index);
+   debugger
+   this.phases[index].measures
     this.phases[index].measures[event.index].task = event.event;
-    console.log('Phases Updated Array:', this.phases);
 
     this.backendData();
     this.sendPhasesList.emit(this.phases);
