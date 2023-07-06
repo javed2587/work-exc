@@ -135,7 +135,8 @@ export class PhaseFourComponent implements OnInit, OnChanges {
               console.log(arr);
               if (arr.active == true) {
                 this.listOfPlanOutCome.push({
-                  color: { background: arr.background },
+                
+                  color: outcome?.rating?.color,
                   active: arr.active,
                   button1: arr.button1,
                   button2: arr.button2,
