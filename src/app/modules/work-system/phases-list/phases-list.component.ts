@@ -119,6 +119,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
         if (chng.currentValue) this.savePage();
       } else if (propName == 'phasesPage') {
         if (this.phasesPage) {
+          debugger
           this.phases = this.phasesPage.phases
             ? this.phasesPage.phases.map((p) => {
                 return {
@@ -208,8 +209,10 @@ export class PhasesListComponent implements OnInit, OnChanges {
                 seqNumber: index,
                 text: measure.value == '' ? null : measure.value,
                 rating: {
-                  task: measure?.task,
-                  note: measure?.note,
+                  task: measure.task == '' ? null : measure.task,
+
+                  note: measure.note == '' ? null : measure.note,
+
                   decision: measure?.decision,
                   opportunity: measure?.opportunity,
                   color: null
@@ -440,6 +443,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
   }
   //? phase measure
   addPhaseMesureList(event) {
+    debugger
     this.phases[this.selectedPhaseIndex].measures.push(event);
 
     this.backendData();
@@ -470,6 +474,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
   }
   selectiveIndexForPhaseMeasure: number;
   getPhaseMeasureForSnakBar(measureIndexObj) {
+    debugger
     this.sendHeaderSectionFlag.emit(false);
     this.sendPhaseListModalFlag.emit(true);
     this.mainIndex = measureIndexObj.mainIndex;
@@ -477,6 +482,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
     const snakBarStatus = measureIndexObj.toolbarStatus;
     this.phases[this.mainIndex].isDisabledDragDrop = true;
     this.phases.forEach((item) => {
+      debugger
       item.measures.forEach((phase) => {
         phase.toolbarStatus = false;
       });
@@ -490,7 +496,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
     this.phases[this.mainIndex].measures[this.childIndex].toolbarStatus =
       !snakBarStatus;
 
-    this.backendData();
+    // this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
   //? phase name
@@ -719,39 +725,56 @@ export class PhasesListComponent implements OnInit, OnChanges {
 
   fetchPhaseMeasureNotesValue(event, index) {
     debugger
-    if(!this.phases[index].measures){
-      this.phases[index].measures[event.index].note = { note: event}
-    } else {
-      this.phases[index].measures[event.index].note = event.event;
-    }
-  
+    this.phases[index].measures[event.index].note = event.event;
     this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
 
+  // fetchPhaseMeasureNotesValue(event, index) {
+  //   debugger
+  //   if(!this.phases[index].measures[event.index].note){
+  //     this.phases[index].measures[event.index].note = { note: event}
+  //   } else {
+  //     this.phases[index].measures[event.index].note = event.event;
+  //   }
+  //   this.backendData();
+  //   this.sendPhasesList.emit(this.phases);
+  // }
+
   fetchPhaseMeasureOpportunityValue(event, index) {
-    if(!this.phases[index].measures){
-      this.phases[index].measures[event.index].oppertunity = {oppertunity: event}
-    } else {
-      this.phases[index].measures[event.index].oppertunity = event.event;
-    }
+
+    this.phases[index].measures[event.index].oppertunity = event.event;
+    // if(!this.phases[index].measures[event.index].oppertunity ){
+    //   this.phases[index].measures[event.index].oppertunity = {oppertunity: event}
+    // } else {
+    //   this.phases[index].measures[event.index].oppertunity = event.event;
+    // }
     this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
 
   fetchPhaseMeasureTaskValue(event, index) {
    debugger
-   this.phases[index].measures
-    this.phases[index].measures[event.index].task = event.event;
+   this.phases[index].measures[event.index].task = event.event;
+  //  if(!this.phases[index].measures[event.index].task){
+  //   this.phases[index].measures[event.index].task = {task: event}
+  //  } else {
+  //   this.phases[index].measures[event.index].task = event.event;
+  //  }
+
 
     this.backendData();
     this.sendPhasesList.emit(this.phases);
   }
 
   fetchPhaseMeasureDecisionValue(event, index) {
-    console.log('Phase Measure Decision Value at Phase List:', event, index);
     this.phases[index].measures[event.index].decision = event.event;
-    console.log('Phases Updated Array:', this.phases);
+    // if(!this.phases[index].measures[event.index].decision ) {
+    //   this.phases[index].measures[event.index].decision = {decision: event};
+    // } else {
+    //   this.phases[index].measures[event.index].decision = event.event;
+    // }
+
 
     this.backendData();
     this.sendPhasesList.emit(this.phases);

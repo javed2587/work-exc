@@ -141,7 +141,10 @@ export class PhaseItemsComponent implements OnInit, OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
       debugger
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    debugger
+    console.log("phases", this.phases)
+  }
 
   fetchNotesValue(event) {
     console.log('Notes Value at Phase Items:', event);

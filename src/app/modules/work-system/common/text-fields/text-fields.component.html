@@ -134,14 +134,14 @@
             >
             </app-mian-tool-bar>
           </span>
-
+          <h1>{{phasesPage?.phases[this.mainIndex]?.phaseDefinition?.measures[i]?.rating?.color}}</h1>
           <input
             type="text"
             class="input-height"
             value=""
             placeholder=""
             aria-label="Username"
-            [ngModel]="obj.value"
+            [(ngModel)]="obj.value"
             aria-describedby="basic-addon1"
             maxlength="150"
             (ngModelChange)="savePhaseMeasures($event, i)"

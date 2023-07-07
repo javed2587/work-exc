@@ -128,6 +128,8 @@ export class TextFieldsComponent implements OnInit, OnChanges {
   constructor(public _voiceToTextService: VoiceToTextServiceService) {}
 
   ngOnInit(): void {
+    debugger
+    console.log("phases", this.phases)
     // if(this.workMeasureData.length> 0) {
     //   this.phaseMeasuresinputFileds = this.workMeasureData;
     // }
