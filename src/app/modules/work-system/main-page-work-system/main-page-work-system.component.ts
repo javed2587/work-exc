@@ -278,6 +278,7 @@ export class MainPageWorkSystemComponent implements OnInit {
   }
 
   getPageNameNotesForBackend(value) {
+    debugger
     console.log('Page Name Notes for backend', value);
     this.pageNameNotes = value;
   }

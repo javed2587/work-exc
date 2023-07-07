@@ -142,7 +142,8 @@ export class PhaseFourComponent implements OnInit, OnChanges {
                   button2: arr.button2,
                   disabled: arr.disabled,
                   value: outcome?.text,
-                  btnstate: arr?.btnstate
+                  btnstate: arr?.btnstate,
+                  isDisabled: false,
 
                 });
                 this.planOutcomes.push(
@@ -205,7 +206,7 @@ export class PhaseFourComponent implements OnInit, OnChanges {
               showModal: false,
               value: state?.text,
               targetVal: state?.target,
-              actualVal: state?.actual,
+              actualVal: state?.actual
             });
             this.openedMeasurePhases++;
             this.planMeasures.push(
@@ -275,7 +276,8 @@ export class PhaseFourComponent implements OnInit, OnChanges {
             button1: arr.button1,
             button2: arr.button2,
             disabled: arr.disabled,
-            btnstate: arr?.btnstate
+            btnstate: arr?.btnstate,
+            isDisabled: false,
           });
           this.openedOutcomePhases++;
           this.planOutcomes.push(
@@ -615,8 +617,10 @@ debugger
     }
   }
   isDisabled: boolean = false
-  disablefield() {
+  disableInputField() {
+    debugger
     this.isDisabled !=  this.isDisabled
+    
   }
 
 

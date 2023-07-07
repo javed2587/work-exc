@@ -71,13 +71,13 @@
                     >
                   </app-mian-tool-bar>
                 </span>
-                <input type="text" class="input-height-plan-outcome input-onFocus" placeholder="" aria-label="Username" [disabled]="o.btnstate"
+                <input type="text" class="input-height-plan-outcome input-onFocus" placeholder="" aria-label="Username"  [disabled]="o.isDisabled" 
                   aria-describedby="basic-addon1" (input)="getPlanOutcomeValue(o, i)" [(ngModel)]="o.value" [disabled]="true ? lockstatus == true : false" >
 
                 <span class="tickmark" [ngClass]="o.button2 ? 'visible' : 'invisible'" >
                   <img src="../../../../assets/workImprovement/Tickmark-green.png" alt="" >
                 </span>
-                <span [ngClass]="o.button1 ? 'visible' : 'invisible'" class="tickmark"  (click)="disableFunc()" >
+                <span [ngClass]="o.button1 ? 'visible' : 'invisible'" class="tickmark" (click)="disableInputField()" >
                   <img src="../../../../assets/workImprovement/Tickmark-blue.png" alt="" (click)="boxHide(o)">
                 </span>
               </div>

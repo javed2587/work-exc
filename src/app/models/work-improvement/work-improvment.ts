@@ -82,7 +82,8 @@ export class WorkImprovementPlanMeasures implements IWorkImprovementPlanMeasures
 export interface IWorkImprovementPlanOutcomes {
   text: string,
   rating: PageDataManagementRailRaiting,
-  seqNumber: string
+  seqNumber: string,
+  
 }
 export class WorkImprovementPlanOutcomes implements IWorkImprovementPlanOutcomes{
   constructor(
@@ -145,7 +146,8 @@ export class WorkImprovementCurrentStates implements IWorkImprovementCurrentStat
   constructor(
     public text: string,
     public rating: PageDataManagementRailRaiting,
-    public seqNumber: string
+    public seqNumber: string,
+   
   ) {
   }
 }
