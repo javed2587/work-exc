@@ -39,7 +39,7 @@ export class TextFieldsComponent implements OnInit, OnChanges {
   @Output() removePhaseMesaureList = new EventEmitter();
 
   @Output() sendphaseName = new EventEmitter<string>();
-  @Output() sendRatingForPhaseName = new EventEmitter();
+  @Output() sendRatingForPhaseNameColor: EventEmitter<any> = new EventEmitter<any>();
   @Output() pushPhaseNameSankbarStatus = new EventEmitter();
 
   @Output() setStepsWorkSnakBarStaus = new EventEmitter();
@@ -315,7 +315,7 @@ export class TextFieldsComponent implements OnInit, OnChanges {
   //? phase name
   setPhaseNameRating(colorValue) {
     debugger
-    this.sendRatingForPhaseName.emit({
+    this.sendRatingForPhaseNameColor.emit({
       mainIndex: this.mainIndex,
       color: colorValue,
     });

@@ -111,6 +111,8 @@ export interface IWorkImprovementPlanSteps {
   isCompleted: boolean,
   startDate: Date,
   endDate: Date,
+  rating: PageDataManagementRailRaiting,
+  planSteps: Array<IWorkImprovementPlanSteps>
 }
 export class WorkImprovementPlanSteps implements IWorkImprovementPlanSteps {
   constructor(
@@ -120,6 +122,8 @@ export class WorkImprovementPlanSteps implements IWorkImprovementPlanSteps {
     public isCompleted: boolean,
     public startDate: Date,
     public endDate: Date,
+    public rating: PageDataManagementRailRaiting,
+    public planSteps: Array<IWorkImprovementPlanSteps>
   ) {
   }
 }

@@ -124,7 +124,9 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
                     isCompleted: step?.isCompleted,
                     seqNumber: step?.seqNumber,
                     startDate: step?.startDate,
-                    step: step?.step
+                    step: step?.step,
+                    rating: step.rating,
+                    planSteps: step.planSteps
                   }
                 }))
             );
@@ -139,8 +141,23 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
                   key: ind,
                   initiativeInput: i?.step,
                   assign_to: i?.assignee,
-                  colorValue: 'white',
+                  rating: i?.rating,
                   displayRatingModel: false,
+                  subinitiative: i.planSteps ? i.planSteps.map(planStep => {
+                    return {
+                      subinitiativeinitiativeInput: planStep.step,
+                      subinitiativeassign_to: planStep.assignee,
+                      subinitiativeComplete: planStep.isCompleted,
+                      subtosubinitiative: planStep.planSteps ? planStep.planSteps.map(subPlanStep => {
+                        return {
+                          rating: subPlanStep.rating,
+                          subtosubinitiativeInput: subPlanStep.step,
+                          subtosubinitiativeassign_to: subPlanStep.assignee,
+                          subtosubinitiativeComplete: subPlanStep.isCompleted
+                        }
+                      }) : []
+                    }
+                  }) : []
                 }
               })
             });
@@ -400,6 +417,8 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
             seqNumber: '1',
             step: null,
             isCompleted: false,
+            rating: { color: null, task: null, opportunity: null, decision: null, note: null },
+            planSteps: []
           },
         ])
       );
@@ -440,6 +459,8 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
         isCompleted: null,
         assignee: { name: null, userId: null },
         seqNumber: key.toString(),
+        rating: { color: null, task: null, opportunity: null, decision: null, note: null },
+        planSteps: []
       });
       this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
       this.initiatives[ind].initiativevalues.push({
@@ -464,12 +485,14 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
   addsubinitiative(ind: number, index: number) {
     // this.chart.push('1');
     //this.displayRatingModel(ind,index);
+    if (!this.initiatives[ind].initiativevalues[index].value)
+      this.initiatives[ind].initiativevalues[index].value = { subinitiative: [] }
 
     if (this.lockstatus == false || this.lockstatus == undefined) {
       this.lastEelement =
-        this.initiatives[ind].initiativevalues[index].value.subinitiative[
-          this.initiatives[ind].initiativevalues[index].value.subinitiative
-            .length - 1
+        this.initiatives[ind].initiativevalues[index]?.value?.subinitiative[
+          this.initiatives[ind].initiativevalues[index]?.value?.subinitiative
+            ?.length - 1
         ];
 
       if (this.lastEelement == undefined) {
@@ -1197,7 +1220,7 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
           for (
             let sub = 0;
             sub <
-            this.initiatives[ind].initiativevalues[index].value.subinitiative
+            this.initiatives[ind].initiativevalues[index]?.value?.subinitiative
               .length;
             sub++
           ) {

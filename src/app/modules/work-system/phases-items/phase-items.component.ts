@@ -299,7 +299,6 @@ export class PhaseItemsComponent implements OnInit, OnChanges{
   }
   //? phase name
   getphaseNameRatingValue(values) {
-    debugger
     this.phaseNameRatingValue.emit(values);
   }
   getPhaseName(val: string) {

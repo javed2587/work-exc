@@ -61,7 +61,6 @@
           (sendPhaseMeasureForSnakBar)="getPhaseMeasureForSnakBar($event)"
           (pushPhaseTitle)="getPhaseTitleValues($event)"
           (pushPhaseNameSnakebarStatus)="getPhaseNameSnakbarStatus($event)"
-          (phaseNameRatingValue)="getPhaseNameRatingValue($event)"
           (addNewhworkType)="addWorkTypesLsit($event)"
           (removeWorkType)="getRemoveVlaueForWorkTypeList($event)"
           (pushWorkTypesValues)="getStepsWorkSaveList($event)"
@@ -80,10 +79,12 @@
           (sendPhaseMeasureDecisionValue)="
             fetchPhaseMeasureDecisionValue($event, i)
           "
+          (phaseNameRatingValue)="getPhaseNameRatingValue($event)"
           (sendPhaseNameNote)="fetchPhaseNameNote($event, i)"
           (sendPhaseNameOpportunity)="fetchPhaseNameOpportunity($event, i)"
           (sendPhaseNameTask)="fetchPhaseNameTask($event, i)"
           (sendPhaseNameDecision)="fetchPhaseNameDecision($event, i)"
+
           (sendWorkTypesNotesValue)="fetchWorkTypesNotesValue($event, i)"
           (sendWorkTypesOpportunityValue)="
             fetchWorkTypesOpportunityValue($event, i)

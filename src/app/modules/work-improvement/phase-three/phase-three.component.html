@@ -132,6 +132,11 @@
                                         phaseFiveModalFlag == false" class="tollbar-group">
                                             <app-mian-tool-bar
                                               (pushColorToMainParentSpan)="setColorValueForOutCome($event,initiative.displayRatingModel,ind,index)"
+                                              [color]="initiative?.rating?.color"
+                                              [color]="initiative?.rating?.task"
+                                              [color]="initiative?.rating?.note"
+                                              [color]="initiative?.rating?.opportunity"
+                                              [color]="initiative?.rating?.decision"
                                               [showSnakeBarMenu]="false"
                                               [displayVal]='false'
                                               [openRatingTabFlag]="true"
@@ -142,7 +147,7 @@
                                         </span>
                     <span class="remove-border badge  card-text initiativekey"
                           (click)="displayRatingModel(initiative.displayRatingModel,ind,index)"
-                          [ngStyle]="{'background-color':initiative.colorValue}">
+                          [ngStyle]="{'background-color':initiative.rating?.color}">
                                             {{initiative['key']}}
                       <img class="initiativearrow"
                            (click)="$event.stopPropagation();addsubinitiative(ind,index)"
@@ -245,6 +250,11 @@
                                             phaseFiveModalFlag == false" class="tollbar-group">
                                                 <app-mian-tool-bar
                                                   (pushColorToMainParentSpan)="setColorValueForOutCome($event,subinitiative?.subinitiativedisplayRatingModel,ind,index,indexsub)"
+                                                  [color]="subinitiative?.rating?.color"
+                                                  [note]="subinitiative?.rating?.note"
+                                                  [opportunity]="subinitiative?.rating?.opportunity"
+                                                  [decision]="subinitiative?.rating?.decision"
+                                                  [task]="subinitiative?.rating?.task"
                                                   [showSnakeBarMenu]="false"
                                                   [displayVal]='false'
                                                   [openRatingTabFlag]="true"
@@ -343,6 +353,11 @@
                                                 phaseFiveModalFlag == false" class="tollbar-group">
                                                     <app-mian-tool-bar
                                                       (pushColorToMainParentSpan)="setColorValueForOutCome($event,subtosubinitiative.subtosubinitiativedisplayRatingModel,ind,index,indexsub,indexsubtosub)"
+                                                      [color]="subtosubinitiative?.rating?.color"
+                                                      [note]="subtosubinitiative?.rating?.note"
+                                                      [opportunity]="subtosubinitiative?.rating?.opportunity"
+                                                      [task]="subtosubinitiative?.rating?.task"
+                                                      [decision]="subtosubinitiative?.rating?.decision"
                                                       [showSnakeBarMenu]="false"
                                                       [displayVal]='false'
                                                       [openRatingTabFlag]="true"

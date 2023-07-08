@@ -134,7 +134,7 @@
             >
             </app-mian-tool-bar>
           </span>
-     
+
           <input
             type="text"
             class="input-height"
@@ -164,7 +164,7 @@
     <span
       class="input-group-text mr-1 backgound"
       id="basic-addon1"
-      [ngStyle]="{ 'background-color': phases[this.mainIndex].phaseNameColor }"
+      [ngStyle]="{ 'background-color': phasesPage?.phases[this.mainIndex].phaseDefinition?.phase?.rating?.color }"
       (click)="
         openPhaseNameSnackBarStatus(
           this.mainIndex,
@@ -194,10 +194,9 @@
         [openRatingTabFlag]="true"
         [color]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phase?.rating?.color"
         [decision]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phase?.rating?.decision"
-        [note]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.note"
-        [test]="phasesPage"
-        [task]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.task"
-        [opportunity]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.opportunity"
+        [note]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phase?.rating?.note"
+        [task]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phase?.rating?.task"
+        [opportunity]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phase?.rating?.opportunity"
       >
       </app-mian-tool-bar>
     </span>
@@ -207,7 +206,7 @@
       class="input-height2"
       placeholder=""
       aria-label="Username"
-      [(ngModel)]="phases[this.mainIndex].phaseTitle"
+      [(ngModel)]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phase.text"
       (ngModelChange)="savePageName($event)"
       [disabled]="true ? lockstatus == true : false"
       aria-describedby="basic-addon1"
