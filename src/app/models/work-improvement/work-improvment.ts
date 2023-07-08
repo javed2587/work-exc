@@ -1,5 +1,6 @@
 import {PageDataManagementRailRaiting, PageMeta} from "../work-system/work-system-header";
 import {PageMetaPageTeamTeamLeader} from "../work-system/work-system-body";
+import { RatingColor } from "../common/rating";
 
 export interface IWorkImprovement {
   id: string,
@@ -109,7 +110,7 @@ export interface IWorkImprovementPlanSteps {
   assignee: PageMetaPageTeamTeamLeader,
   isCompleted: boolean,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 }
 export class WorkImprovementPlanSteps implements IWorkImprovementPlanSteps {
   constructor(
@@ -118,7 +119,7 @@ export class WorkImprovementPlanSteps implements IWorkImprovementPlanSteps {
     public assignee: PageMetaPageTeamTeamLeader,
     public isCompleted: boolean,
     public startDate: Date,
-    public endDate: Date
+    public endDate: Date,
   ) {
   }
 }

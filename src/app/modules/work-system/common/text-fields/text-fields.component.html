@@ -126,15 +126,15 @@
               (pushOppertunity)="fetchPhaseMeasureOpportunityValue($event, i)"
               (pushDecisionValue)="fetchPhaseMeasureDecisionValue($event, i)"
               (pushTaslValue)="fetchPhaseMeasureTaskValue($event, i)"
-              [color]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.measures[i]?.rating?.color"
-              [note]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.measures[i]?.rating?.note"
-              [decision]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.measures[i]?.rating?.decision"
-              [task]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.measures[i]?.rating?.task"
-              [opportunity]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.measures[i]?.rating?.opportunity"
+              [color]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phaseMeasures[i]?.rating?.color"
+              [note]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phaseMeasures[i]?.rating?.note"
+              [decision]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phaseMeasures[i]?.rating?.decision"
+              [task]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phaseMeasures[i]?.rating?.task"
+              [opportunity]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phaseMeasures[i]?.rating?.opportunity"
             >
             </app-mian-tool-bar>
           </span>
-          <h1>{{phasesPage?.phases[this.mainIndex]?.phaseDefinition?.measures[i]?.rating?.color}}</h1>
+     
           <input
             type="text"
             class="input-height"
@@ -192,8 +192,8 @@
         [lockstatus]="lockstatus"
         [openRatingForNote]="true"
         [openRatingTabFlag]="true"
-        [color]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.color"
-        [decision]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.decision"
+        [color]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phase?.rating?.color"
+        [decision]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.phase?.rating?.decision"
         [note]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.note"
         [test]="phasesPage"
         [task]="phasesPage?.phases[this.mainIndex]?.phaseDefinition?.purpose?.rating?.task"

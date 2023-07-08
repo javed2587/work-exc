@@ -123,12 +123,14 @@ export class PhasesListComponent implements OnInit, OnChanges {
           this.phases = this.phasesPage.phases
             ? this.phasesPage.phases.map((p) => {
                 return {
-                  phaseTitle: p.phaseDefinition.phaseTitle,
-                  phaseNameColor:  p.phaseDefinition.purpose.rating,
                   purpose: p.phaseDefinition.purpose.text,
                   purposeAttrs: p.phaseDefinition.purpose.rating,
-                  measures: p.phaseDefinition.measures
-                    ? p.phaseDefinition.measures.map((m) => {
+
+                  phaseTitle: p.phaseDefinition.phaseTitle,
+                  phase: p.phaseDefinition.phase.rating,
+                  
+                  measures: p.phaseDefinition.phaseMeasures
+                    ? p.phaseDefinition.phaseMeasures.map((m) => {
                         return {
                           rateValue:
                             m.rating.color == '' ? null : m.rating.color,
@@ -204,7 +206,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
               }
             },
             
-            measures: phase.measures.map((measure, index) => {
+            phaseMeasures: phase.measures.map((measure, index) => {
               return {
                 seqNumber: index,
                 text: measure.value == '' ? null : measure.value,
@@ -219,14 +221,14 @@ export class PhasesListComponent implements OnInit, OnChanges {
                 }
               };
             }),
-            phases: {
+            phase: {
               text: phase.phaseTitle == '' ? null : phase.phaseTitle,
               rating: {
                 task: phase?.task,
                 note: phase?.note,
                 decision: phase?.decision,
                 opportunity: phase?.opportunity,
-                color: null
+                color: phase?.color,
               }
             },
             entryGate: {
@@ -318,10 +320,11 @@ export class PhasesListComponent implements OnInit, OnChanges {
         this.phases.push({
           phaseTitle: '',
           phaseNameColor: '',
-          phaseAttrs: {
+          phase: {
+            value: '',
             note: '',
-            opportunity: '',
             task: '',
+            opportunity: '',
             decision: '',
           },
           purpose: '',
@@ -332,12 +335,12 @@ export class PhasesListComponent implements OnInit, OnChanges {
             opportunity: '',
             decision: '',
           },
-          measures: [
+          phaseMeasures: [
             {
               rateValue: '',
               note: '',
               task: '',
-              oppertunity: '',
+              opportunity: '',
               decision: '',
               value: '',
               toolbarStatus: false,
@@ -359,7 +362,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
               rateValue: '',
               note: '',
               task: '',
-              oppertunity: '',
+              opportunity: '',
               decision: '',
               value: '',
               toolbarStatus: false,
@@ -500,19 +503,21 @@ export class PhasesListComponent implements OnInit, OnChanges {
     this.sendPhasesList.emit(this.phases);
   }
   //? phase name
-  getPhaseTitleValues(item: PhaseItemI) {
-    this.phases[item.index].phaseTitle = item.title;
-
-    this.backendData();
-    this.sendPhasesList.emit(this.phases);
-  }
   getPhaseNameRatingValue(values) {
+    debugger
     const index = values.mainIndex;
     const colorVal = values.color;
     this.phases[index].phaseNameColor = colorVal;
     this.phases[index].phaseNameFlag = false;
     this.sendPhasesList.emit(this.phases);
   }
+  getPhaseTitleValues(item: PhaseItemI) {
+    this.phases[item.index].phaseTitle = item.title;
+
+    this.backendData();
+    this.sendPhasesList.emit(this.phases);
+  }
+
   getPhaseNameSnakbarStatus(values) {
     this.sendHeaderSectionFlag.emit(false);
     this.sendPhaseListModalFlag.emit(true);
@@ -672,6 +677,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
   }
 
   fetchNotesValue(event, index) {
+    debugger
     console.log('Notes Value at Phase List:', event, index);
     if (!this.phases[index].purposeAttrs)
       this.phases[index].purposeAttrs = { note: event };
@@ -721,6 +727,41 @@ export class PhasesListComponent implements OnInit, OnChanges {
     this.sendPhasesList.emit(this.phases);
   }
 
+  //phase 
+  fetchPhaseNameDecision(event, index) {
+    debugger
+    console.log('Phase Name Decision Value at Phase List:', event, index);
+    this.phases[index].phase.decision = event;
+    console.log('Phases Updated Array:', this.phases);
+    this.backendData();
+    this.sendPhasesList.emit(this.phases);
+  }
+  fetchPhaseNameNote(event, index) {
+    debugger
+    console.log('Phase Name Note Value at Phase List:', event, index);
+    this.phases[index].phase.note = event;
+    console.log('Phases Updated Array:', this.phases);
+
+    this.backendData();
+    this.sendPhasesList.emit(this.phases);
+  }
+  fetchPhaseNameOpportunity(event, index) {
+    console.log('Phase Name Opportunity Value at Phase List:', event, index);
+    this.phases[index].phaseAttrs.opportunity = event;
+    console.log('Phases Updated Array:', this.phases);
+
+    this.backendData();
+    this.sendPhasesList.emit(this.phases);
+  }
+  fetchPhaseNameTask(event, index) {
+    console.log('Phase Name Task Value at Phase List:', event, index);
+    this.phases[index].phaseAttrs.task = event;
+    console.log('Phases Updated Array:', this.phases);
+
+    this.backendData();
+    this.sendPhasesList.emit(this.phases);
+  }
+
   // Phase Measures
 
   fetchPhaseMeasureNotesValue(event, index) {
@@ -742,8 +783,8 @@ export class PhasesListComponent implements OnInit, OnChanges {
   // }
 
   fetchPhaseMeasureOpportunityValue(event, index) {
-
-    this.phases[index].measures[event.index].oppertunity = event.event;
+ debugger
+    this.phases[index].measures[event.index].opportunity = event.event;
     // if(!this.phases[index].measures[event.index].oppertunity ){
     //   this.phases[index].measures[event.index].oppertunity = {oppertunity: event}
     // } else {
@@ -793,7 +834,7 @@ export class PhasesListComponent implements OnInit, OnChanges {
 
   fetchWorkTypesOpportunityValue(event, index) {
     console.log('Work Types Opportunity Value at Phase List:', event, index);
-    this.phases[index].workSteps[event.index].oppertunity = event.event;
+    this.phases[index].workSteps[event.index].opportunity = event.event;
     console.log('Phases Updated Array:', this.phases);
 
     this.backendData();
@@ -818,41 +859,8 @@ export class PhasesListComponent implements OnInit, OnChanges {
     this.sendPhasesList.emit(this.phases);
   }
 
-  fetchPhaseNameNote(event, index) {
-    console.log('Phase Name Note Value at Phase List:', event, index);
-    this.phases[index].phaseAttrs.note = event;
-    console.log('Phases Updated Array:', this.phases);
 
-    this.backendData();
-    this.sendPhasesList.emit(this.phases);
-  }
 
-  fetchPhaseNameOpportunity(event, index) {
-    console.log('Phase Name Opportunity Value at Phase List:', event, index);
-    this.phases[index].phaseAttrs.opportunity = event;
-    console.log('Phases Updated Array:', this.phases);
-
-    this.backendData();
-    this.sendPhasesList.emit(this.phases);
-  }
-
-  fetchPhaseNameTask(event, index) {
-    console.log('Phase Name Task Value at Phase List:', event, index);
-    this.phases[index].phaseAttrs.task = event;
-    console.log('Phases Updated Array:', this.phases);
-
-    this.backendData();
-    this.sendPhasesList.emit(this.phases);
-  }
-
-  fetchPhaseNameDecision(event, index) {
-    console.log('Phase Name Decision Value at Phase List:', event, index);
-    this.phases[index].phaseAttrs.decision = event;
-    console.log('Phases Updated Array:', this.phases);
-
-    this.backendData();
-    this.sendPhasesList.emit(this.phases);
-  }
   // getRemoveMeasure(val) { //no
   //   if(val != -1){
   //     this.phases[this.selectedPhaseIndex].measures.splice(val,1)

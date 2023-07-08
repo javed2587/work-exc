@@ -12,8 +12,12 @@ export interface PageBodyPhasesPhaseDefinition {
     text: String
     rating?: PageDataLeadershipRailRaiting
   },
-  measures: Array<PageBodyPhasesMeasures>,
-  entryGate: PageBodyPhasesEntryGate
+  phaseMeasures: Array<PageBodyPhasesMeasures>,
+  entryGate: PageBodyPhasesEntryGate,
+  phase: {
+    text: String
+    rating?: PageDataLeadershipRailRaiting
+  }
 }
 
 export interface PageBodyPhasesEntryGate {

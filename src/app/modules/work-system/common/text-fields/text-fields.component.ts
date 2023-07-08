@@ -207,6 +207,7 @@ export class TextFieldsComponent implements OnInit, OnChanges {
   }
 
   fetchPhaseNameDecision(event) {
+    debugger
     this.sendPhaseNameDecision.emit(event);
     console.log('Phase Name Decision:', event);
   }
@@ -313,6 +314,7 @@ export class TextFieldsComponent implements OnInit, OnChanges {
   }
   //? phase name
   setPhaseNameRating(colorValue) {
+    debugger
     this.sendRatingForPhaseName.emit({
       mainIndex: this.mainIndex,
       color: colorValue,

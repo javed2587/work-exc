@@ -396,9 +396,9 @@ export class PageChecksService {
   isPurposeMeasureCountNotMatch(phases: Array<PageBodyPhases>, count: number) {
     if (phases.filter((p, i) => !p.phaseDefinition).length > 0)
       return true
-    else if (phases.filter((p, i) => p.phaseDefinition?.measures?.length < count).length > 0)
+    else if (phases.filter((p, i) => p.phaseDefinition?.phaseMeasures?.length < count).length > 0)
       return true
-    else if (phases.filter((p, i) => p.phaseDefinition?.measures?.filter((m, ind) => (!m.text || m.text == '')).length > 0).length > 0)
+    else if (phases.filter((p, i) => p.phaseDefinition?.phaseMeasures?.filter((m, ind) => (!m.text || m.text == '')).length > 0).length > 0)
       return true
     else return false
   }
