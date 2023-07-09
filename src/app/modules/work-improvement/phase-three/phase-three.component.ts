@@ -16,6 +16,8 @@ import {
   WorkImprovementInitiatives,
   WorkImprovementPotentialPlanBarriers,
 } from '../../../models/work-improvement/work-improvment';
+import { UserService } from 'src/app/services/user/user.service';
+import { User } from 'src/app/models/user/user';
 
 @Component({
   selector: 'app-phase-three',
@@ -79,7 +81,8 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
 
   constructor(
     public dateService: DateService,
-    public phaseThreeService: PhaseThreeService
+    public phaseThreeService: PhaseThreeService,
+    public userService: UserService
   ) {
     //--------------------SERVICE--------------------------
     // phaseThreeService.getInitiativeDetail().subscribe((responseData) => {
@@ -95,7 +98,32 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  users: User[] = []
+
+  setUserNameOfUsers() {
+    if (this.users.length > 0) {
+      this.users.forEach((m, i) => {
+        if (!m.username && (m.firstName || m.lastName)) {
+          if (m.firstName) m.username = m.firstName.valueOf();
+          else m.username = '';
+          if (m.lastName) m.username = m.username + ' ' + m.lastName;
+        }
+        if (!m.username) m.username = '';
+      });
+    }
+  }
+
+  getUsers() {
+    this.userService.findAll().subscribe((users: User[]) => {
+      if (users) {
+        this.users = users
+        this.setUserNameOfUsers()
+      }
+    })
+  }
+
   ngOnInit(): void {
+    this.getUsers()
     // this.dateService.passValue.subscribe(value => {
     //
     //   this.main_page_start_date = value.sDate
@@ -107,7 +135,7 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
     // })
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
 
   initiativesPopulated: Boolean = false;
   ngOnChanges(changes: SimpleChanges): void {
@@ -125,42 +153,13 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
                     seqNumber: step?.seqNumber,
                     startDate: step?.startDate,
                     step: step?.step,
-                    rating: step.rating,
-                    planSteps: step.planSteps
+                    rating: { color: step?.rating?.color, note: step?.rating?.note, opportunity: step?.rating?.opportunity, decision: step?.rating?.decision, task: step?.rating?.task },
+                    planSteps: step.planSteps ? step.planSteps : []
                   }
                 }))
             );
-            this.initiatives.push({
-              id: iniIndex,
-              index: this.numToSS(iniIndex),
-              initiativename: ini.name ? ini?.name + ' ' + iniIndex : iniIndex,
-              inititiative_textarea: ini?.name,
-              display_flag: true,
-              initiativevalues: ini.planSteps.map((i, ind) => {
-                return {
-                  key: ind,
-                  initiativeInput: i?.step,
-                  assign_to: i?.assignee,
-                  rating: i?.rating,
-                  displayRatingModel: false,
-                  subinitiative: i.planSteps ? i.planSteps.map(planStep => {
-                    return {
-                      subinitiativeinitiativeInput: planStep.step,
-                      subinitiativeassign_to: planStep.assignee,
-                      subinitiativeComplete: planStep.isCompleted,
-                      subtosubinitiative: planStep.planSteps ? planStep.planSteps.map(subPlanStep => {
-                        return {
-                          rating: subPlanStep.rating,
-                          subtosubinitiativeInput: subPlanStep.step,
-                          subtosubinitiativeassign_to: subPlanStep.assignee,
-                          subtosubinitiativeComplete: subPlanStep.isCompleted
-                        }
-                      }) : []
-                    }
-                  }) : []
-                }
-              })
-            });
+            // debugger
+            this.updateInitiatives(this.workImprovementInitiatives)
           });
           this.initiativesPopulated = true;
           this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
@@ -355,6 +354,50 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  updateInitiatives(initiatives: Array<WorkImprovementInitiatives>) {
+    this.initiatives = []
+    initiatives.forEach((ini, iniIndex) => {
+      this.initiatives.push({
+        id: iniIndex,
+        index: this.numToSS(iniIndex),
+        initiativename: ini.name ? ini?.name + ' ' + iniIndex : iniIndex,
+        inititiative_textarea: ini?.name,
+        display_flag: true,
+        initiativevalues: ini.planSteps.map((i, ind) => {
+          return {
+            key: ind+1,
+            initiativeInput: i?.step,
+            assign_to: i?.assignee,
+            rating: i?.rating,
+            displayRatingModel: false,
+            initiativeComplete: i.isCompleted,
+            value: { initiativeComplete: i.isCompleted, subinitiative: i.planSteps ? i.planSteps.map(planStep => {
+              return {
+                subinitiativekey: planStep.seqNumber,
+                rating: planStep.rating,
+                subinitiativeinitiativeInput: planStep?.step,
+                subinitiativeassign_to: planStep?.assignee,
+                subinitiativeComplete: planStep.isCompleted,
+                subinitiativedisplayRatingModel: false,
+                subtosubinitiative: planStep.planSteps ? planStep.planSteps.map(subPlanStep => {
+                  return {
+                    subtosubinitiativekey: subPlanStep.seqNumber,
+                    rating: subPlanStep?.rating,
+                    subtosubinitiativeInput: subPlanStep?.step,
+                    subtosubinitiativeassign_to: subPlanStep?.assignee,
+                    subtosubinitiativeComplete: subPlanStep?.isCompleted,
+                    subtosubinitiativedisplayRatingModel: false
+                  }
+                }) : []
+              }
+            }) : [] }
+          }
+        })
+      })
+    });
+    debugger
+  }
+
   // This function is used for converting index of initiative(1,2,3,4...) from number to string(A,B,C,D...)
   numToSS(num: any) {
     let columnLetter = '',
@@ -438,7 +481,6 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
             colorValue: 'white',
             value: {
               initiativeComplete: false,
-
               initiativeGantChart: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
               subinitiative: [],
             },
@@ -463,6 +505,7 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
         planSteps: []
       });
       this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
+
       this.initiatives[ind].initiativevalues.push({
         key: key,
         initiativeInput: '',
@@ -485,14 +528,16 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
   addsubinitiative(ind: number, index: number) {
     // this.chart.push('1');
     //this.displayRatingModel(ind,index);
-    if (!this.initiatives[ind].initiativevalues[index].value)
+    if (!this.initiatives[ind].initiativevalues[index].value) {
       this.initiatives[ind].initiativevalues[index].value = { subinitiative: [] }
+      this.workImprovementInitiatives[ind].planSteps[index].planSteps = []
+    }
 
     if (this.lockstatus == false || this.lockstatus == undefined) {
       this.lastEelement =
         this.initiatives[ind].initiativevalues[index]?.value?.subinitiative[
-          this.initiatives[ind].initiativevalues[index]?.value?.subinitiative
-            ?.length - 1
+        this.initiatives[ind].initiativevalues[index]?.value?.subinitiative
+          ?.length - 1
         ];
 
       if (this.lastEelement == undefined) {
@@ -507,6 +552,16 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
           subinitiativeGantChart: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
           subtosubinitiative: [],
         });
+        this.workImprovementInitiatives[ind].planSteps[index].planSteps.push({
+          planSteps: [],
+          startDate: null,
+          seqNumber: this.initiatives[ind].initiativevalues[index].key + '.1',
+          assignee: { userId: null, name: null },
+          step: null,
+          endDate: null,
+          isCompleted: false,
+          rating: { color: null, note: null, opportunity: null, decision: null, task: null }
+        })
       } else {
         this.lastEelement =
           this.initiatives[ind].initiativevalues[index].value.subinitiative[
@@ -524,6 +579,16 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
           subinitiativeGantChart: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
           subtosubinitiative: [],
         });
+        this.workImprovementInitiatives[ind].planSteps[index].planSteps.push({
+          planSteps: [],
+          startDate: null,
+          seqNumber: parseFloat(this.lastEelement + 0.1).toFixed(1),
+          assignee: { userId: null, name: null },
+          step: null,
+          endDate: null,
+          isCompleted: false,
+          rating: { color: null, note: null, opportunity: null, decision: null, task: null }
+        })
       }
     }
   }
@@ -552,6 +617,16 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
           ],
         });
+        this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].planSteps.push({
+          planSteps: [],
+          startDate: null,
+          seqNumber: this.initiatives[ind].initiativevalues[index].value.subinitiative[indexsub].subinitiativekey + '.1',
+          assignee: { userId: null, name: null },
+          step: null,
+          endDate: null,
+          isCompleted: false,
+          rating: { color: null, note: null, opportunity: null, decision: null, task: null }
+        })
       } else {
         this.lastEelement =
           this.initiatives[ind].initiativevalues[index].value.subinitiative[
@@ -579,6 +654,16 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
               1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
             ],
           });
+          this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].planSteps.push({
+            planSteps: [],
+            startDate: null,
+            seqNumber: this.lastEelement.toString().slice(0, 2) +(parseFloat(this.lastEelement.toString().slice(2)) + 0.1).toFixed(1),
+            assignee: { userId: null, name: null },
+            step: null,
+            endDate: null,
+            isCompleted: false,
+            rating: { color: null, note: null, opportunity: null, decision: null, task: null }
+          })
         } else {
           this.initiatives[ind].initiativevalues[index].value.subinitiative[
             indexsub
@@ -597,6 +682,16 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
               1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
             ],
           });
+          this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].planSteps.push( {
+            planSteps: [],
+            startDate: null,
+            seqNumber: this.lastEelement.toString().slice(0, 3) + (parseFloat(this.lastEelement.toString().slice(3)) + 0.1).toFixed(1),
+            assignee: { userId: null, name: null },
+            step: null,
+            endDate: null,
+            isCompleted: false,
+            rating: { color: null, note: null, opportunity: null, decision: null, task: null }
+          } )
         }
       }
     }
@@ -654,7 +749,8 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
         ].value.initiativeComplete = this.checkBoxValue;
         this.workImprovementInitiatives[this.indcheckbox].planSteps[
           this.indexcheckbox
-        ].isCompleted = true;
+        ].isCompleted = this.checkBoxValue;
+        this.updateInitiatives(this.workImprovementInitiatives)
         this.sendWorkImprovementInitiatives.emit(
           this.workImprovementInitiatives
         );
@@ -665,12 +761,22 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
           ].value.subinitiative[this.subindex].subtosubinitiative[
             this.childindex
           ].subtosubinitiativeComplete = true;
+          this.workImprovementInitiatives[this.indcheckbox].planSteps[this.indexcheckbox].planSteps[this.subindex].planSteps[this.childindex].isCompleted = this.checkBoxValue
+          this.updateInitiatives(this.workImprovementInitiatives)
+          this.sendWorkImprovementInitiatives.emit(
+            this.workImprovementInitiatives
+          );
         }
       } else if (this.check == 'subinitiativeComplete') {
         this.initiatives[this.indcheckbox].initiativevalues[
           this.indexcheckbox
         ].value.subinitiative[this.childindex].subinitiativeComplete =
           this.checkBoxValue;
+        this.workImprovementInitiatives[this.indcheckbox].planSteps[this.indexcheckbox].planSteps[this.childindex].isCompleted = this.checkBoxValue
+        this.updateInitiatives(this.workImprovementInitiatives)
+        this.sendWorkImprovementInitiatives.emit(
+          this.workImprovementInitiatives
+        );
       }
       this.checkBoxValue = false;
       this.display_showCompleteModel = false;
@@ -797,7 +903,7 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
           i <
           this.initiatives[this.deleteind].initiativevalues[this.deleteindex]
             .value.subinitiative.length -
-            1;
+          1;
           i++
         ) {
           this.initiatives[this.deleteind].initiativevalues[
@@ -877,7 +983,7 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
             this.initiatives[this.deleteind].initiativevalues[this.deleteindex]
               .value.subinitiative[this.deletechildren].subtosubinitiative
               .length -
-              1;
+            1;
             keyiterator++
           ) {
             this.initiatives[this.deleteind].initiativevalues[
@@ -1028,6 +1134,7 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
     this.workImprovementInitiatives[this.indgantchart].planSteps[
       this.indexofinitiativevaluesgantchart
     ].endDate = this.end_of_date;
+    this.updateInitiatives(this.workImprovementInitiatives)
     this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
     if (this.lockstatus == false || this.lockstatus == undefined) {
       this.fillInitiativeGantChartInput =
@@ -1172,6 +1279,65 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
 
   colorvalue: any;
 
+  setColorValueForInitiativeLevel3(color, ind, index, indexsub, indexsubtosub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].planSteps[indexsubtosub].rating.color = color
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setNoteValueForInitiativeLevel3(note, ind, index, indexsub, indexsubtosub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].planSteps[indexsubtosub].rating.note = note
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setTaskValueForInitiativeLevel3(task, ind, index, indexsub, indexsubtosub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].planSteps[indexsubtosub].rating.task = task
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setDecisionValueForInitiativeLevel3(decision, ind, index, indexsub, indexsubtosub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].planSteps[indexsubtosub].rating.decision = decision
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setOppertunityValueForInitiativeLevel3(oppertunity, ind, index, indexsub, indexsubtosub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].planSteps[indexsubtosub].rating.opportunity = oppertunity
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setColorValueForInitiativeLevel2(color, ind, index, indexsub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].rating.color = color
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setDecisonValueForInitiativeLevel2(decision, ind, index, indexsub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].rating.decision = decision
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setNoteValueForInitiativeLevel2(note, ind, index, indexsub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].rating.note = note
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+  setTaskValueForInitiativeLevel2(task, ind, index, indexsub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].rating.task = task
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+  setOppertunityValueForInitiativeLevel2(oppertunity, ind, index, indexsub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].rating.opportunity = oppertunity
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+
   setColorValueForOutCome(
     val: any,
     modelDisplayBooleanValue,
@@ -1182,6 +1348,9 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
   ) {
     if (this.lockstatus == false || this.lockstatus == undefined) {
       this.colorvalue = val;
+      this.workImprovementInitiatives[ind].planSteps[index].rating.color = this.colorvalue
+      this.updateInitiatives(this.workImprovementInitiatives)
+      this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
       if (subindex == undefined) {
         this.initiatives[ind].initiativevalues[index].colorValue =
           this.colorvalue;
@@ -1205,6 +1374,37 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
         );
       }
     }
+  }
+
+  setColorValueForInitiative(color,ind,index) {
+    debugger
+    this.workImprovementInitiatives[ind].planSteps[index].rating.color = color
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setNoteValueForInitiative(note, ind, index) {
+    this.workImprovementInitiatives[ind].planSteps[index].rating.note = note
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setTaskValueForInitiative(task, ind, index) {
+    this.workImprovementInitiatives[ind].planSteps[index].rating.task = task
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setDecisionValueForInitiative(decision, ind, index) {
+    this.workImprovementInitiatives[ind].planSteps[index].rating.decision = decision
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
+  }
+
+  setOppertunityValueForInitiative(oppertunity, ind, index) {
+    this.workImprovementInitiatives[ind].planSteps[index].rating.opportunity = oppertunity
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives)
   }
 
   destroyRatingModel() {
@@ -1303,18 +1503,55 @@ export class PhaseThreeComponent implements OnChanges, OnInit, OnDestroy {
 
   saveInitiativeValue(init, ind) {
     this.workImprovementInitiatives[ind].name = init.inititiative_textarea;
+    // this.updateInitiatives(this.workImprovementInitiatives)
     this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
   }
 
   saveInitiativeFirstLevelValue(firstLevelInitiative, parentIndex, index) {
     this.workImprovementInitiatives[parentIndex].planSteps[index].step =
       firstLevelInitiative.initiativeInput;
+    // this.updateInitiatives(this.workImprovementInitiatives)
     this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
   }
-  saveInitiativeAssignee(initiative, parentIndex, index) {
+
+  saveInitiativeLevel2Value(subinitiative, ind, index, indexsub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].step = subinitiative.subinitiativeinitiativeInput;
+    // this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
+  }
+
+  saveInitiativeLevel3Value(subtosubinitiative, ind, index, indexsub, indexsubtosub) {
+    this.workImprovementInitiatives[ind].planSteps[index].planSteps[indexsub].planSteps[indexsubtosub].step = subtosubinitiative.subtosubinitiativeInput;
+    // this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
+  }
+
+  saveInitiativeAssignee(event, parentIndex, index) {
+    const id = event.target.value
+    const user: User = this.users.filter(user => user.id == id)[0]
     this.workImprovementInitiatives[parentIndex].planSteps[
       index
-    ].assignee.name = initiative.assign_to;
+    ].assignee.name = user.username;
+    this.workImprovementInitiatives[parentIndex].planSteps[
+      index
+    ].assignee.userId = user.id;
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
+  }
+  saveInitiativeAssigneeLevel2(event, parentIndex, index, indexsub) {
+    const id = event.target.value
+    const user: User = this.users.filter(user => user.id == id)[0]
+    this.workImprovementInitiatives[parentIndex].planSteps[index].planSteps[indexsub].assignee.name = user.username;
+    this.workImprovementInitiatives[parentIndex].planSteps[index].planSteps[indexsub].assignee.userId = user.id;
+    this.updateInitiatives(this.workImprovementInitiatives)
+    this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
+  }
+  saveInitiativeAssigneeLevel3(event, parentIndex, index, indexsub, indexsubtosub) {
+    const id = event.target.value
+    const user: User = this.users.filter(user => user.id == id)[0]
+    this.workImprovementInitiatives[parentIndex].planSteps[index].planSteps[indexsub].planSteps[indexsubtosub].assignee.name = user.username;
+    this.workImprovementInitiatives[parentIndex].planSteps[index].planSteps[indexsub].planSteps[indexsubtosub].assignee.userId = user.id;
+    this.updateInitiatives(this.workImprovementInitiatives)
     this.sendWorkImprovementInitiatives.emit(this.workImprovementInitiatives);
   }
 }
